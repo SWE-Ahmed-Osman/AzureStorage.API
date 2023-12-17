@@ -1,0 +1,9 @@
+
+*.db*
+*.Development*
+
+*.idea/
+*obj/
+*bin/
+*vs/
+*Migrations/
