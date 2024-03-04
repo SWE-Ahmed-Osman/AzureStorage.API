@@ -1,31 +1,15 @@
-using Azure.Core.Pipeline;
-using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
 using AzureStorage.DTOs;
-using Microsoft.Extensions.Configuration;
 
 namespace AzureStorage.Repositories;
 
-public class BlobRepository(IConfiguration configuration) : IBlobRepository
+public class BlobRepository(BlobServiceClient blobServiceClient) : IBlobRepository
 {
-    private readonly BlobServiceClient _blobServiceClient = new BlobServiceClient(
-        configuration.GetConnectionString("AzureStorage"), new()
-        {
-            Transport = new HttpClientTransport(new HttpClient
-            {
-                Timeout = Timeout.InfiniteTimeSpan
-            }),
-            Retry =
-            {
-                NetworkTimeout = Timeout.InfiniteTimeSpan
-            }
-        });
-    
     public async Task<Result<string>> UriAsync(BlobDto blobDto)
     {
-        var blobClient = _blobServiceClient.GetBlobContainerClient(blobDto.Container)
+        var blobClient = blobServiceClient.GetBlobContainerClient(blobDto.Container)
             .GetBlobClient(blobDto.Blob);
 
         return (await blobClient.ExistsAsync()).Value
@@ -37,7 +21,7 @@ public class BlobRepository(IConfiguration configuration) : IBlobRepository
 
     public async Task<Result> DeleteAsync(BlobDto blobDto)
     {
-        var blobClient = _blobServiceClient.GetBlobContainerClient(blobDto.Container)
+        var blobClient = blobServiceClient.GetBlobContainerClient(blobDto.Container)
             .GetBlobClient(blobDto.Blob);
         return (await blobClient.DeleteIfExistsAsync()).Value
             ? Result.Success()
@@ -46,7 +30,7 @@ public class BlobRepository(IConfiguration configuration) : IBlobRepository
 
     public async Task<Result<BlobDownloadInfo>> DownloadAsync(BlobDto blobDto)
     {
-        var blobClient = _blobServiceClient.GetBlobContainerClient(blobDto.Container)
+        var blobClient = blobServiceClient.GetBlobContainerClient(blobDto.Container)
             .GetBlobClient(blobDto.Blob);
         return (await blobClient.ExistsAsync()).Value
             ? Result<BlobDownloadInfo>.Success((await blobClient.DownloadAsync()).Value)
@@ -55,7 +39,7 @@ public class BlobRepository(IConfiguration configuration) : IBlobRepository
 
     public async Task<Result<string>> UploadAsync(UploadBlobDto uploadBlobDto)
     {
-        var blobClient = _blobServiceClient.GetBlobContainerClient(uploadBlobDto.Container)
+        var blobClient = blobServiceClient.GetBlobContainerClient(uploadBlobDto.Container)
             .GetBlobClient(Guid.NewGuid() + Path.GetExtension(uploadBlobDto.Blob.FileName));
 
         var blobContentInfo
