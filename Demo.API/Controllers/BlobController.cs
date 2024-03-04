@@ -1,8 +1,8 @@
-using AzureStorageService.DTOs;
-using AzureStorageService.Repositories;
+using AzureStorage.DTOs;
+using AzureStorage.Repositories;
 using Microsoft.AspNetCore.Mvc;
 
-namespace DemoWebAPI.Controllers;
+namespace Demo.Controllers;
 
 [ApiController]
 [Route("api/[controller]/[action]")]

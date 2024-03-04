@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace AzureStorageService.DTOs;
+namespace AzureStorage.DTOs;
 
 public class DirectoryDto
 {

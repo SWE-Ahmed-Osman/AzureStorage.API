@@ -1,7 +1,7 @@
 using Azure.Storage.Blobs.Models;
-using AzureStorageService.DTOs;
+using AzureStorage.DTOs;
 
-namespace AzureStorageService.Repositories;
+namespace AzureStorage.Repositories;
 
 public interface IBlobRepository
 {

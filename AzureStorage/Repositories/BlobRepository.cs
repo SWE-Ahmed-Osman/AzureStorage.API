@@ -3,19 +3,24 @@ using Azure.Storage;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
-using AzureStorageService.DTOs;
+using AzureStorage.DTOs;
 using Microsoft.Extensions.Configuration;
 
-namespace AzureStorageService.Repositories;
+namespace AzureStorage.Repositories;
 
 public class BlobRepository(IConfiguration configuration) : IBlobRepository
 {
-    private readonly BlobServiceClient _blobServiceClient = new(
-        configuration.GetConnectionString("AzureStorage")!, new BlobClientOptions
+    private readonly BlobServiceClient _blobServiceClient = new BlobServiceClient(
+        configuration.GetConnectionString("AzureStorage"), new()
         {
             Transport = new HttpClientTransport(new HttpClient
-                { Timeout = Timeout.InfiniteTimeSpan }),
-            Retry = { NetworkTimeout = Timeout.InfiniteTimeSpan }
+            {
+                Timeout = Timeout.InfiniteTimeSpan
+            }),
+            Retry =
+            {
+                NetworkTimeout = Timeout.InfiniteTimeSpan
+            }
         });
     
     public async Task<Result<string>> UriAsync(BlobDto blobDto)
@@ -57,7 +62,7 @@ public class BlobRepository(IConfiguration configuration) : IBlobRepository
             = await blobClient.UploadAsync(uploadBlobDto.Blob.OpenReadStream(),
                 new BlobUploadOptions
                 {
-                    TransferOptions = new StorageTransferOptions
+                    TransferOptions = new()
                     {
                         MaximumConcurrency = 8,
                         InitialTransferSize = 1024 * 1024,

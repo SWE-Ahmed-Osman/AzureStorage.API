@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Http;
 
-namespace AzureStorageService.DTOs;
+namespace AzureStorage.DTOs;
 
 public class UploadBlobDto
 {

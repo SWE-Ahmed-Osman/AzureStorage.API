@@ -1,6 +1,6 @@
-using AzureStorageService.DTOs;
+using AzureStorage.DTOs;
 
-namespace AzureStorageService.Repositories;
+namespace AzureStorage.Repositories;
 
 public interface IContainerRepository
 {

@@ -1,18 +1,23 @@
 using Azure.Core.Pipeline;
 using Azure.Storage.Blobs;
-using AzureStorageService.DTOs;
+using AzureStorage.DTOs;
 using Microsoft.Extensions.Configuration;
 
-namespace AzureStorageService.Repositories;
+namespace AzureStorage.Repositories;
 
 public class ContainerRepository(IConfiguration configuration) : IContainerRepository
 {
-    private readonly BlobServiceClient _blobServiceClient = new(
-        configuration.GetConnectionString("AzureStorage")!, new BlobClientOptions
+    private readonly BlobServiceClient _blobServiceClient = new BlobServiceClient(
+        configuration.GetConnectionString("AzureStorage")!, new()
         {
             Transport = new HttpClientTransport(new HttpClient
-            { Timeout = Timeout.InfiniteTimeSpan }),
-            Retry = { NetworkTimeout = Timeout.InfiniteTimeSpan }
+            {
+                Timeout = Timeout.InfiniteTimeSpan
+            }),
+            Retry =
+            {
+                NetworkTimeout = Timeout.InfiniteTimeSpan
+            }
         });
 
     public async Task<Result<List<string>>> BlobsAsync(DirectoryDto directoryDto)
